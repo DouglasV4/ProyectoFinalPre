@@ -1,6 +1,5 @@
 from fastapi import FastAPI
-from schemas import PreguntaRequest
-
+from api.schemas import PreguntaRequest
 
 # ==========================
 # APLICACIÓN
