@@ -34,12 +34,7 @@ permite consultar datos mediante un asistente virtual administrativo.
 
 ## 4. Descripción de la Solución
 
-Aplicación web desarrollada con Python y Streamlit para administrar
-vehículos, clientes, alquileres y pagos. Incluye un asistente virtual
-que responde preguntas como: - ¿Cuántos vehículos están alquilados? -
-¿Qué clientes tienen pagos pendientes? - ¿Qué vehículos están
-disponibles?
-
+Aplicación desarrollada en Python con Streamlit para la interfaz y FastAPI para la API inteligente, incorporando pruebas automatizadas con pytest y un pipeline de Integración Continua mediante GitHub Actions."
 Entradas: datos de clientes, vehículos, pagos y consultas del usuario.
 
 Salidas: reportes, estado de vehículos y respuestas del asistente.
@@ -145,7 +140,19 @@ pip install -r requirements.txt
 ``` bash
 streamlit run app.py
 ```
+### Ejecutar pruebas
 
+Ejecutar las pruebas automatizadas del proyecto:
+
+```bash
+pytest
+```
+
+Para obtener información más detallada de las pruebas:
+
+```bash
+pytest -v
+```
 Variables de entorno: No aplica.
 
 ------------------------------------------------------------------------
@@ -219,3 +226,12 @@ Variables de entorno: No aplica.
 -   [x] Instalación explicada.
 -   [x] Riesgos identificados.
 -   [x] Plan de mejora definido.
+
+## 18. Registro de errores y correcciones
+
+| Error detectado | Corrección aplicada |
+|-----------------|---------------------|
+| Error en GitHub Actions por ausencia de `requirements.txt`. | Se creó el archivo `requirements.txt` y se actualizaron las dependencias. |
+| Archivos `__pycache__` aparecían en Git. | Se creó un archivo `.gitignore` para excluir archivos temporales. |
+| Error inicial en el pipeline de CI. | Se corrigió la configuración del workflow `.github/workflows/ci.yml` hasta lograr una ejecución exitosa. |
+
