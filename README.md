@@ -235,3 +235,11 @@ Variables de entorno: No aplica.
 | Archivos `__pycache__` aparecían en Git. | Se creó un archivo `.gitignore` para excluir archivos temporales. |
 | Error inicial en el pipeline de CI. | Se corrigió la configuración del workflow `.github/workflows/ci.yml` hasta lograr una ejecución exitosa. |
 
+------------------------------------------------------------------------
+
+## 19. Ejecución con Docker
+
+### Construir la imagen
+
+```bash
+docker build -t chatbot-renta .
