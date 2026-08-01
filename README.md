@@ -7,7 +7,7 @@
 **Nombre del equipo:** RentaCar
 
 **Integrantes:** - Douglas Jose Velasquez Vasquez 
-                 - carlos Antonio 
+                 - Carlos Antonio Nolasco Argueta
                  - Jose Elias Escobar Ortiz 
 
 
