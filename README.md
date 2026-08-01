@@ -243,3 +243,28 @@ Variables de entorno: No aplica.
 
 ```bash
 docker build -t chatbot-renta .
+
+
+## 20. Endpoints Disponibles
+
+| Método | Endpoint | Descripción |
+|---------|----------|-------------|
+| GET | `/health` | Verifica que la API se encuentre disponible. |
+| GET | `/metadata` | Devuelve información general del servicio. |
+| POST | `/ask` | Procesa consultas relacionadas con el sistema de renta de vehículos. |
+
+Documentación disponible en:
+
+```text
+http://localhost:8000/docs
+
+## 22. Próximas Mejoras
+
+Como parte de la evolución del proyecto se pretende incorporar las siguientes funcionalidades:
+
+- Integración con una base de datos relacional.
+- Implementación de autenticación y autorización de usuarios.
+- Registro de auditoría y monitoreo del sistema.
+- Integración con modelos de inteligencia artificial más avanzados.
+- Despliegue en un proveedor de servicios en la nube.
+- Panel administrativo con reportes estadísticos.
