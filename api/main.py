@@ -1,5 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from api.schemas import PreguntaRequest
+
+import logging
+import time
+import uuid
 
 # ==========================
 # APLICACIÓN
@@ -11,6 +17,74 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# ==========================
+# OBSERVABILIDAD
+# ==========================
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s"
+)
+
+logger = logging.getLogger("rentcar_api")
+
+AI_VERSION = "rules-v1"
+
+@app.middleware("http")
+async def observability_middleware(request, call_next):
+
+    request_id = str(uuid.uuid4())
+    start_time = time.perf_counter()
+
+    try:
+
+        response = await call_next(request)
+
+        duration_ms = (
+            time.perf_counter() - start_time
+        ) * 1000
+
+        error_type = (
+      "validation_error"
+            if response.status_code == 422
+            else None
+        )
+        logger.info(
+            "request_id=%s | endpoint=%s | method=%s | "
+            "status=%s | duration_ms=%.2f | "
+            "ai_version=%s | error_type=%s",
+            request_id,
+            request.url.path,
+            request.method,
+            response.status_code,
+            duration_ms,
+            AI_VERSION,
+            error_type
+        )
+
+        response.headers["X-Request-ID"] = request_id
+
+        return response
+
+    except Exception as error:
+
+        duration_ms = (
+            time.perf_counter() - start_time
+        ) * 1000
+
+        logger.error(
+            "request_id=%s | endpoint=%s | method=%s | "
+            "status=500 | duration_ms=%.2f | "
+            "ai_version=%s | error_type=%s",
+            request_id,
+            request.url.path,
+            request.method,
+            duration_ms,
+            AI_VERSION,
+            type(error).__name__
+        )
+
+        raise
 
 # ==========================
 # BASE DE DATOS SIMULADA

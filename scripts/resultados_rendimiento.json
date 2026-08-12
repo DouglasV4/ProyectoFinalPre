@@ -1,0 +1,114 @@
+{
+    "resultados": [
+        {
+            "status": 200,
+            "duration_ms": 6.638400023803115,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 17.209500074386597,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 17.70410011522472,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.612600069493055,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.960499808192253,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.265599988400936,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 15.883099986240268,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 17.494299914687872,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.117700142785907,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.546300146728754,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.41319994814694,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.021299874410033,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.57600002363324,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 2.2064000368118286,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 14.576799934729934,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.517700161784887,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.3805999327451,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.780199948698282,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.21020003221929,
+            "error": null
+        },
+        {
+            "status": 200,
+            "duration_ms": 16.84360019862652,
+            "error": null
+        }
+    ],
+    "resumen": {
+        "endpoint": "http://127.0.0.1:8000/ask",
+        "solicitudes": 20,
+        "exitosas": 20,
+        "errores": 0,
+        "p50_ms": 16.47,
+        "p95_ms": 17.5,
+        "max_ms": 17.7,
+        "tasa_error_porcentaje": 0.0
+    }
+}

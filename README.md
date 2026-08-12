@@ -247,16 +247,75 @@ docker build -t chatbot-renta .
 
 ## 20. Endpoints Disponibles
 
-| Método | Endpoint | Descripción |
-|---------|----------|-------------|
-| GET | `/health` | Verifica que la API se encuentre disponible. |
-| GET | `/metadata` | Devuelve información general del servicio. |
-| POST | `/ask` | Procesa consultas relacionadas con el sistema de renta de vehículos. |
+| Método | Endpoint    | Descripción                                                          |
+| ------ | ----------- | -------------------------------------------------------------------- |
+| GET    | `/health`   | Verifica que la API se encuentre disponible.                         |
+| GET    | `/metadata` | Devuelve información general del servicio.                           |
+| POST   | `/ask`      | Procesa consultas relacionadas con el sistema de renta de vehículos. |
 
 Documentación disponible en:
 
 ```text
 http://localhost:8000/docs
+```
+
+## 21. Observabilidad del Sistema
+
+Durante esta etapa se incorporó instrumentación al backend para registrar información técnica de las solicitudes HTTP y facilitar el monitoreo del funcionamiento de la API.
+
+Cada solicitud registra:
+
+- `request_id`: identificador único de la solicitud.
+- `endpoint`: ruta consultada.
+- `method`: método HTTP utilizado.
+- `status`: código de respuesta HTTP.
+- `duration_ms`: duración de la solicitud en milisegundos.
+- `ai_version`: versión del componente de IA.
+- `error_type`: tipo de error cuando corresponde.
+
+La versión utilizada actualmente es:
+
+```text
+rules-v1
+```
+
+El endpoint principal evaluado fue:
+
+```text
+POST /ask
+```
+
+### Solicitud exitosa
+
+Se realizó una solicitud válida al endpoint `/ask`, obteniendo una respuesta HTTP 200.
+
+Ejemplo de registro:
+
+```text
+endpoint=/ask
+method=POST
+status=200
+duration_ms=4.25
+ai_version=rules-v1
+error_type=None
+```
+
+### Error controlado
+
+También se realizó una solicitud inválida al endpoint `/ask` sin proporcionar el campo obligatorio `pregunta`.
+
+La API respondió correctamente con HTTP 422 y registró:
+
+```text
+endpoint=/ask
+method=POST
+status=422
+duration_ms=5.25
+ai_version=rules-v1
+error_type=validation_error
+```
+
+Esto permite identificar el tipo de error sin detener el servicio.
 
 ## 22. Próximas Mejoras
 
