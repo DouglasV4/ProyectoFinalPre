@@ -1,8 +1,9 @@
 import streamlit as st
 import pandas as pd
 import requests
+import os
 
-
+API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
 # =====================================
 # CONFIGURACIÓN
 # =====================================
@@ -416,7 +417,7 @@ if opcion == "🤖 Asistente Virtual":
 
                 respuesta = requests.post(
 
-                    "http://127.0.0.1:8000/ask",
+                    f"{API_URL}/ask",
 
                     json={
                         "pregunta": pregunta

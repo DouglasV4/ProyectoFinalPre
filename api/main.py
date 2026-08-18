@@ -96,16 +96,60 @@ vehiculos = [
         "estado": "Disponible"
     },
     {
-        "modelo": "Hyundai Tucson",
-        "estado": "Alquilado"
-    },
-    {
         "modelo": "Nissan Versa",
         "estado": "Disponible"
     },
     {
         "modelo": "Kia Rio",
         "estado": "Disponible"
+    },
+    {
+        "modelo": "Hyundai Tucson",
+        "estado": "Alquilado"
+    },
+    {
+        "modelo": "Toyota Hilux",
+        "estado": "Alquilado"
+    },
+    {
+        "modelo": "Chevrolet Spark",
+        "estado": "Disponible"
+    },
+    {
+        "modelo": "Mazda CX-5",
+        "estado": "Disponible"
+    },
+    {
+        "modelo": "Ford Ranger",
+        "estado": "Alquilado"
+    },
+    {
+        "modelo": "Honda Civic",
+        "estado": "Disponible"
+    },
+    {
+        "modelo": "Mitsubishi L200",
+        "estado": "Disponible"
+    },
+    {
+        "modelo": "Suzuki Swift",
+        "estado": "Disponible"
+    },
+    {
+        "modelo": "Volkswagen Jetta",
+        "estado": "Alquilado"
+    },
+    {
+        "modelo": "Kia Sportage",
+        "estado": "Disponible"
+    },
+    {
+        "modelo": "Hyundai Accent",
+        "estado": "Disponible"
+    },
+    {
+        "modelo": "Toyota Prado",
+        "estado": "Alquilado"
     }
 ]
 
