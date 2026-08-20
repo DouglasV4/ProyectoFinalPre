@@ -5,3 +5,4 @@ httpx
 streamlit
 pandas
 requests
+python-dotenv
