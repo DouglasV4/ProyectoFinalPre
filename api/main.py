@@ -3,9 +3,14 @@ from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from api.schemas import PreguntaRequest
 
+import os
+import requests
 import logging
 import time
 import uuid
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # ==========================
 # APLICACIÓN
@@ -28,7 +33,7 @@ logging.basicConfig(
 
 logger = logging.getLogger("rentcar_api")
 
-AI_VERSION = "rules-v1"
+AI_VERSION = "ollama-llama3.2"
 
 @app.middleware("http")
 async def observability_middleware(request, call_next):
@@ -187,7 +192,57 @@ def metadata():
         "purpose": "Apoyar la consulta de información administrativa del sistema"
     }
 
+# ==========================
+# CONEXIÓN CON OLLAMA
+# ==========================
 
+OLLAMA_URL = os.getenv(
+    "OLLAMA_URL",
+    "http://localhost:11434/api/generate"
+)
+
+OLLAMA_MODEL = os.getenv(
+    "OLLAMA_MODEL",
+    "llama3.2:latest"
+)
+
+
+def consultar_ollama(pregunta, contexto):
+    prompt = f"""
+Eres un asistente virtual para una empresa de renta de vehículos.
+
+Tu función es ayudar a los administradores con información sobre
+vehículos, clientes y reservas.
+
+Utiliza únicamente la información proporcionada en el contexto.
+
+Si la información necesaria no aparece en el contexto, indica que
+no tienes esa información disponible.
+
+Contexto del sistema:
+{contexto}
+
+Pregunta del usuario:
+{pregunta}
+
+Responde de manera clara, natural y breve en español.
+"""
+
+    respuesta = requests.post(
+        OLLAMA_URL,
+        json={
+            "model": OLLAMA_MODEL,
+            "prompt": prompt,
+            "stream": False
+        },
+        timeout=60
+    )
+
+    respuesta.raise_for_status()
+
+    datos = respuesta.json()
+
+    return datos["response"].strip()
 # ==========================
 # FUNCIÓN DEL CHATBOT
 # ==========================
@@ -305,10 +360,61 @@ Prueba preguntando:
 @app.post("/ask")
 def ask(request: PreguntaRequest):
 
-    resultado = chatbot(request.pregunta)
+    pregunta = request.pregunta
 
-    return {
-        "pregunta": request.pregunta,
-        "tipo_consulta": resultado["tipo_consulta"],
-        "respuesta": resultado["respuesta"]
-    }
+    vehiculos_disponibles = [
+        v["modelo"]
+        for v in vehiculos
+        if v["estado"] == "Disponible"
+    ]
+
+    vehiculos_alquilados = [
+        v["modelo"]
+        for v in vehiculos
+        if v["estado"] == "Alquilado"
+    ]
+
+    contexto = f"""
+INFORMACIÓN OFICIAL DEL SISTEMA DE RENTA DE VEHÍCULOS
+
+VEHÍCULOS DISPONIBLES:
+{chr(10).join("- " + v for v in vehiculos_disponibles)}
+
+VEHÍCULOS ALQUILADOS:
+{chr(10).join("- " + v for v in vehiculos_alquilados)}
+
+CLIENTES REGISTRADOS:
+{clientes}
+
+RESERVAS REGISTRADAS:
+{reservas}
+"""
+
+    try:
+
+        respuesta_ia = consultar_ollama(
+            pregunta,
+            contexto
+        )
+
+        return {
+            "pregunta": pregunta,
+            "tipo_consulta": "ia_ollama",
+            "respuesta": respuesta_ia
+        }
+
+    except Exception as error:
+
+        logger.error(
+            "Error al consultar Ollama: %s",
+            error
+        )
+
+        # Si Ollama falla, mantenemos el chatbot anterior
+        resultado = chatbot(pregunta)
+
+        return {
+            "pregunta": pregunta,
+            "tipo_consulta": resultado["tipo_consulta"],
+            "respuesta": resultado["respuesta"]
+        }
