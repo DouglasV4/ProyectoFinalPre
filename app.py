@@ -4,94 +4,257 @@ import requests
 import os
 
 API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
+
+
 # =====================================
 # CONFIGURACIÓN
 # =====================================
 
 st.set_page_config(
-    page_title="Sistema Inteligente de Renta de Vehículos",
+    page_title="RentCar AI",
     page_icon="🚗",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 
 # =====================================
-# ESTILOS PERSONALIZADOS
+# ESTILOS PROFESIONALES
 # =====================================
 
 st.markdown("""
 <style>
 
-.stApp {
-    background-color: #f5f5f5;
-}
+    /* ================================
+       CONFIGURACIÓN GENERAL
+       ================================ */
 
-/* Títulos */
+    .stApp {
+        background-color: #f4f6f8;
+    }
 
-h1 {
-    color: #B71C1C !important;
-    text-align: center;
-}
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+        max-width: 1400px;
+    }
 
-h2, h3 {
-    color: #B71C1C !important;
-}
 
-/* Texto normal */
+    /* ================================
+       SIDEBAR
+       ================================ */
 
-p, label, div {
-    color: #222222;
-}
+    section[data-testid="stSidebar"] {
+        background-color: #151922;
+        border-right: 1px solid #252b36;
+    }
 
-/* Métricas */
+    section[data-testid="stSidebar"] * {
+        color: #ffffff !important;
+    }
 
-[data-testid="stMetric"] {
-    background-color: white;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
-}
+    section[data-testid="stSidebar"] .stRadio label {
+        padding: 10px 8px;
+        border-radius: 8px;
+    }
 
-/* Inputs */
 
-.stTextInput input,
-.stTextArea textarea {
-    background-color: white;
-    color: black;
-    border-radius: 10px;
-    border: 2px solid #B71C1C;
-}
+    /* ================================
+       TITULOS
+       ================================ */
 
-/* Selectbox */
+    h1 {
+        color: #151922 !important;
+        font-weight: 800 !important;
+        letter-spacing: -1px;
+    }
 
-.stSelectbox div {
-    color: black;
-}
+    h2, h3 {
+        color: #202631 !important;
+        font-weight: 700 !important;
+    }
 
-/* Botones */
+    p {
+        color: #5f6875;
+    }
 
-.stButton button {
-    background-color: #C62828;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    font-weight: bold;
-    height: 45px;
-}
 
-.stButton button:hover {
-    background-color: #8E0000;
-}
+    /* ================================
+       ENCABEZADO
+       ================================ */
 
-/* Sidebar */
+    .brand-header {
+        background: linear-gradient(
+            135deg,
+            #151922 0%,
+            #242b38 100%
+        );
 
-section[data-testid="stSidebar"] {
-    background-color: #B71C1C;
-}
+        padding: 28px 32px;
+        border-radius: 18px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
 
-section[data-testid="stSidebar"] * {
-    color: white !important;
-}
+    .brand-title {
+        color: white;
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .brand-subtitle {
+        color: #c7cdd6;
+        font-size: 15px;
+        margin-top: 6px;
+    }
+
+    .system-status {
+        background-color: #1f9d55;
+        color: white;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 15px;
+    }
+
+
+    /* ================================
+       TARJETAS DE ESTADÍSTICAS
+       ================================ */
+
+    [data-testid="stMetric"] {
+        background-color: white;
+        border: 1px solid #e4e7eb;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: #697382 !important;
+        font-weight: 600;
+    }
+
+    [data-testid="stMetricValue"] {
+        color: #151922 !important;
+        font-weight: 800;
+    }
+
+
+    /* ================================
+       CONTENEDORES
+       ================================ */
+
+    .dashboard-card {
+        background-color: white;
+        padding: 22px;
+        border-radius: 16px;
+        border: 1px solid #e4e7eb;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        color: #202631;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+
+    /* ================================
+       BOTONES
+       ================================ */
+
+    .stButton > button {
+        background-color: #c62828;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 700;
+        min-height: 42px;
+        transition: 0.2s;
+    }
+
+    .stButton > button:hover {
+        background-color: #a61f1f;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+
+    /* ================================
+       INPUTS
+       ================================ */
+
+    .stTextInput input,
+    .stTextArea textarea {
+        background-color: white;
+        color: #202631;
+        border: 1px solid #d9dee5;
+        border-radius: 10px;
+    }
+
+    .stTextInput input:focus,
+    .stTextArea textarea:focus {
+        border-color: #c62828;
+        box-shadow: 0 0 0 1px #c62828;
+    }
+
+
+    /* ================================
+       TABLAS
+       ================================ */
+
+    [data-testid="stDataFrame"] {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e1e5ea;
+    }
+
+
+    /* ================================
+       ESTADOS
+       ================================ */
+
+    .status-available {
+        color: #18864b;
+        font-weight: 700;
+    }
+
+    .status-rented {
+        color: #c62828;
+        font-weight: 700;
+    }
+
+
+    /* ================================
+       DIVISORES
+       ================================ */
+
+    hr {
+        border: none;
+        border-top: 1px solid #e1e5ea;
+        margin: 25px 0;
+    }
+
+
+    /* ================================
+       PIE DE PÁGINA
+       ================================ */
+
+    .footer {
+        text-align: center;
+        color: #89919d;
+        font-size: 13px;
+        margin-top: 35px;
+        padding-top: 20px;
+        border-top: 1px solid #e1e5ea;
+    }
 
 </style>
 """, unsafe_allow_html=True)
@@ -264,20 +427,17 @@ alquilados = len(
 # TÍTULO
 # =====================================
 
-st.title(
-    "🚗 Sistema Inteligente de Renta de Vehículos"
-)
+# =====================================
+# ENCABEZADO PRINCIPAL
+# =====================================
 
-st.markdown(
-    """
-    <center>
-    <p>
-    Panel administrativo con asistente virtual inteligente
-    </p>
-    </center>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="brand-header">
+<div class="brand-title">🚗 RENTCAR AI</div>
+<div class="brand-subtitle">Sistema inteligente de gestión de renta de vehículos</div>
+<div class="system-status">● Sistema operativo · IA conectada</div>
+</div>
+""", unsafe_allow_html=True)
 
 
 # =====================================
