@@ -565,6 +565,8 @@ with st.sidebar:
 
 
 # =====================================
+# =====================================
+# =====================================
 # ASISTENTE VIRTUAL
 # =====================================
 
@@ -572,22 +574,44 @@ if opcion == "🤖 Asistente Virtual":
 
     st.markdown("---")
 
-    st.header(
-        "🤖 Asistente Virtual"
+    st.header("🤖 Asistente Virtual")
+
+    st.markdown(
+        """
+<div class="dashboard-card">
+<div class="card-title">
+🤖 Asistente inteligente
+</div>
+
+<p>
+Consulta información sobre vehículos, clientes y reservas
+utilizando lenguaje natural.
+</p>
+</div>
+""",
+        unsafe_allow_html=True
     )
 
-    st.info(
-        "Realiza consultas sobre vehículos, clientes y reservas."
-    )
+    # =====================================
+    # CONSULTA
+    # =====================================
+
+    st.markdown("### 💬 Realiza una consulta")
 
     pregunta = st.text_area(
-        "Escribe tu consulta:",
-        placeholder=(
-            "Ejemplo: ¿Qué vehículos están disponibles?"
-        ),
-        height=100
+        "Escribe tu pregunta",
+        placeholder="Ejemplo: ¿Qué vehículos están disponibles?",
+        height=120
     )
 
+    st.caption(
+        "Puedes preguntar por vehículos disponibles, clientes, "
+        "reservas y pagos pendientes."
+    )
+
+    # =====================================
+    # BOTÓN
+    # =====================================
 
     if st.button(
         "🔍 Consultar Asistente"
@@ -596,54 +620,97 @@ if opcion == "🤖 Asistente Virtual":
         if pregunta.strip() == "":
 
             st.warning(
-                "Por favor, escribe una pregunta."
+                "⚠️ Por favor, escribe una pregunta antes de consultar."
             )
 
         else:
 
-            try: 
-                #conexion con api
+            try:
 
-                respuesta = requests.post(
+                # =====================================
+                # CONEXIÓN CON API
+                # =====================================
 
-                    f"{API_URL}/ask",
+                with st.spinner(
+                    "🤖 El asistente está procesando tu consulta..."
+                ):
 
-                    json={
-                        "pregunta": pregunta
-                    },
+                    respuesta = requests.post(
+                        f"{API_URL}/ask",
+                        json={
+                            "pregunta": pregunta
+                        },
+                        timeout=10
+                    )
 
-                    timeout=10
-
-                )
-
+                # =====================================
+                # RESPUESTA EXITOSA
+                # =====================================
 
                 if respuesta.status_code == 200:
 
                     datos = respuesta.json()
 
+                    st.markdown("---")
+
+                    st.markdown(
+                        "### 🤖 Respuesta del asistente"
+                    )
 
                     st.success(
-                        "Respuesta del asistente"
+                        "Consulta procesada correctamente."
                     )
 
+                    st.markdown(
+                        f"""
+<div class="dashboard-card">
 
-                    st.write(
-                        datos["respuesta"]
+<div class="card-title">
+🤖 RENTCAR AI
+</div>
+
+<p style="
+color: #202631;
+font-size: 16px;
+line-height: 1.7;
+">
+{datos["respuesta"]}
+</p>
+
+</div>
+""",
+                        unsafe_allow_html=True
                     )
 
+                # =====================================
+                # ERROR DE API
+                # =====================================
 
                 else:
 
                     st.error(
-                        f"Error de la API: "
+                        f"❌ Error de la API: "
                         f"{respuesta.status_code}"
                     )
 
+            except requests.exceptions.Timeout:
+
+                st.error(
+                    "⏱️ La API tardó demasiado en responder. "
+                    "Intenta nuevamente."
+                )
+
+            except requests.exceptions.ConnectionError:
+
+                st.error(
+                    "🔌 No se pudo conectar con la API. "
+                    "Verifica que el servidor FastAPI esté funcionando."
+                )
 
             except Exception as e:
 
                 st.error(
-                    f"No se pudo conectar con la API: {e}"
+                    f"❌ Ocurrió un error inesperado: {e}"
                 )
 
 
@@ -812,20 +879,175 @@ elif opcion == "👥 Clientes":
 
 
 # =====================================
+# =====================================
 # RESERVAS
 # =====================================
 
 elif opcion == "📅 Reservas":
 
-    st.header(
-        "📅 Reservas del Sistema"
+    st.header("📅 Gestión de Reservas")
+
+    # =====================================
+    # DATOS DE RESERVAS
+    # =====================================
+
+    reservas = [
+        {
+            "cliente": "Carlos Martinez",
+            "vehiculo": "Toyota Hilux",
+            "precio": 65,
+            "estado": "Pendiente"
+        },
+        {
+            "cliente": "Ana Gomez",
+            "vehiculo": "Hyundai Tucson",
+            "precio": 50,
+            "estado": "Pendiente"
+        },
+        {
+            "cliente": "Luis Perez",
+            "vehiculo": "Toyota Prado",
+            "precio": 90,
+            "estado": "Pagado"
+        },
+        {
+            "cliente": "Maria Hernandez",
+            "vehiculo": "Ford Ranger",
+            "precio": 70,
+            "estado": "Pagado"
+        },
+        {
+            "cliente": "Jose Ramirez",
+            "vehiculo": "Volkswagen Jetta",
+            "precio": 45,
+            "estado": "Pendiente"
+        }
+    ]
+
+    # =====================================
+    # ESTADÍSTICAS
+    # =====================================
+
+    total_reservas = len(reservas)
+
+    reservas_pagadas = len(
+        [
+            r for r in reservas
+            if r["estado"] == "Pagado"
+        ]
     )
 
-
-    st.info(
-        "Actualmente existen 5 reservas registradas."
+    reservas_pendientes = len(
+        [
+            r for r in reservas
+            if r["estado"] == "Pendiente"
+        ]
     )
 
+    ingresos_reservas = sum(
+        r["precio"]
+        for r in reservas
+        if r["estado"] == "Pagado"
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            "📅 Total Reservas",
+            total_reservas
+        )
+
+    with col2:
+        st.metric(
+            "🟢 Pagadas",
+            reservas_pagadas
+        )
+
+    with col3:
+        st.metric(
+            "🔴 Pendientes",
+            reservas_pendientes
+        )
+
+    with col4:
+        st.metric(
+            "💰 Ingresos",
+            f"${ingresos_reservas}"
+        )
+
+    st.markdown("---")
+
+    # =====================================
+    # TABLA DE RESERVAS
+    # =====================================
+
+    st.markdown("### 📋 Reservas Registradas")
+
+    col_busqueda, col_filtro = st.columns([2, 1])
+
+    with col_busqueda:
+
+        busqueda_reserva = st.text_input(
+            "🔎 Buscar reserva",
+            placeholder="Ejemplo: Carlos, Toyota..."
+        )
+
+    with col_filtro:
+
+        filtro_reserva = st.selectbox(
+            "📌 Estado",
+            [
+                "Todos",
+                "Pagado",
+                "Pendiente"
+            ]
+        )
+
+    reservas_filtradas = reservas
+
+    if busqueda_reserva:
+
+        reservas_filtradas = [
+            reserva
+            for reserva in reservas_filtradas
+            if busqueda_reserva.lower()
+            in (
+                reserva["cliente"]
+                + " "
+                + reserva["vehiculo"]
+            ).lower()
+        ]
+
+    if filtro_reserva != "Todos":
+
+        reservas_filtradas = [
+            reserva
+            for reserva in reservas_filtradas
+            if reserva["estado"] == filtro_reserva
+        ]
+
+    st.caption(
+        f"Mostrando {len(reservas_filtradas)} "
+        f"de {len(reservas)} reservas"
+    )
+
+    df_reservas = pd.DataFrame(
+        reservas_filtradas
+    )
+
+    df_reservas.columns = [
+        "Cliente",
+        "Vehículo",
+        "Precio",
+        "Estado"
+    ]
+
+    st.dataframe(
+        df_reservas,
+        use_container_width=True,
+        hide_index=True
+    )
 
 # =====================================
 # PIE DE PÁGINA
