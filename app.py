@@ -444,40 +444,35 @@ st.markdown("""
 # ESTADÍSTICAS
 # =====================================
 
-st.markdown("## 📊 Estadísticas del Sistema")
+# =====================================
+# ESTADÍSTICAS
+# =====================================
 
+st.markdown("## 📊 Resumen del Sistema")
 
 col1, col2, col3, col4 = st.columns(4)
 
-
 with col1:
-
     st.metric(
-        "🚗 Total Vehículos",
+        "🚗 Vehículos registrados",
         total_vehiculos
     )
 
-
 with col2:
-
     st.metric(
-        "✅ Disponibles",
+        "🟢 Vehículos disponibles",
         disponibles
     )
 
-
 with col3:
-
     st.metric(
-        "🔴 Alquilados",
+        "🔴 Vehículos alquilados",
         alquilados
     )
 
-
 with col4:
-
     st.metric(
-        "👥 Clientes",
+        "👥 Clientes registrados",
         len(clientes)
     )
 
@@ -486,31 +481,65 @@ with col4:
 # TABLA DE VEHÍCULOS
 # =====================================
 
+# =====================================
+# INVENTARIO DE VEHÍCULOS
+# =====================================
+
 st.markdown("---")
 
-st.markdown(
-    "## 🚘 Inventario de Vehículos"
-)
+st.markdown("## 🚘 Inventario de Vehículos")
 
+# Crear DataFrame
+df_vehiculos = pd.DataFrame(vehiculos)
 
-df_vehiculos = pd.DataFrame(
-    vehiculos
-)
+# Filtros
+col_busqueda, col_estado = st.columns([2, 1])
 
+with col_busqueda:
+    busqueda = st.text_input(
+        "🔎 Buscar vehículo",
+        placeholder="Ejemplo: Toyota, Hyundai, Kia..."
+    )
 
-df_vehiculos.columns = [
+with col_estado:
+    filtro_estado = st.selectbox(
+        "📌 Filtrar por estado",
+        ["Todos", "Disponible", "Alquilado"]
+    )
+
+# Aplicar búsqueda
+df_filtrado = df_vehiculos.copy()
+
+if busqueda:
+    df_filtrado = df_filtrado[
+        df_filtrado["modelo"]
+        .str.contains(busqueda, case=False, na=False)
+    ]
+
+# Aplicar filtro de estado
+if filtro_estado != "Todos":
+    df_filtrado = df_filtrado[
+        df_filtrado["estado"] == filtro_estado
+    ]
+
+# Cambiar nombres para mostrar
+df_filtrado.columns = [
     "Modelo",
     "Estado",
     "Precio por Día"
 ]
 
+# Mostrar cantidad encontrada
+st.caption(
+    f"Mostrando {len(df_filtrado)} de {len(df_vehiculos)} vehículos"
+)
 
+# Tabla
 st.dataframe(
-    df_vehiculos,
+    df_filtrado,
     use_container_width=True,
     hide_index=True
 )
-
 
 # =====================================
 # PANEL LATERAL
