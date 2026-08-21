@@ -4,94 +4,257 @@ import requests
 import os
 
 API_URL = os.getenv("API_URL", "http://127.0.0.1:8000")
+
+
 # =====================================
 # CONFIGURACIÓN
 # =====================================
 
 st.set_page_config(
-    page_title="Sistema Inteligente de Renta de Vehículos",
+    page_title="RentCar AI",
     page_icon="🚗",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
 
 
 # =====================================
-# ESTILOS PERSONALIZADOS
+# ESTILOS PROFESIONALES
 # =====================================
 
 st.markdown("""
 <style>
 
-.stApp {
-    background-color: #f5f5f5;
-}
+    /* ================================
+       CONFIGURACIÓN GENERAL
+       ================================ */
 
-/* Títulos */
+    .stApp {
+        background-color: #f4f6f8;
+    }
 
-h1 {
-    color: #B71C1C !important;
-    text-align: center;
-}
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 3rem;
+        max-width: 1400px;
+    }
 
-h2, h3 {
-    color: #B71C1C !important;
-}
 
-/* Texto normal */
+    /* ================================
+       SIDEBAR
+       ================================ */
 
-p, label, div {
-    color: #222222;
-}
+    section[data-testid="stSidebar"] {
+        background-color: #151922;
+        border-right: 1px solid #252b36;
+    }
 
-/* Métricas */
+    section[data-testid="stSidebar"] * {
+        color: #ffffff !important;
+    }
 
-[data-testid="stMetric"] {
-    background-color: white;
-    padding: 15px;
-    border-radius: 15px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.15);
-}
+    section[data-testid="stSidebar"] .stRadio label {
+        padding: 10px 8px;
+        border-radius: 8px;
+    }
 
-/* Inputs */
 
-.stTextInput input,
-.stTextArea textarea {
-    background-color: white;
-    color: black;
-    border-radius: 10px;
-    border: 2px solid #B71C1C;
-}
+    /* ================================
+       TITULOS
+       ================================ */
 
-/* Selectbox */
+    h1 {
+        color: #151922 !important;
+        font-weight: 800 !important;
+        letter-spacing: -1px;
+    }
 
-.stSelectbox div {
-    color: black;
-}
+    h2, h3 {
+        color: #202631 !important;
+        font-weight: 700 !important;
+    }
 
-/* Botones */
+    p {
+        color: #5f6875;
+    }
 
-.stButton button {
-    background-color: #C62828;
-    color: white;
-    border-radius: 10px;
-    border: none;
-    font-weight: bold;
-    height: 45px;
-}
 
-.stButton button:hover {
-    background-color: #8E0000;
-}
+    /* ================================
+       ENCABEZADO
+       ================================ */
 
-/* Sidebar */
+    .brand-header {
+        background: linear-gradient(
+            135deg,
+            #151922 0%,
+            #242b38 100%
+        );
 
-section[data-testid="stSidebar"] {
-    background-color: #B71C1C;
-}
+        padding: 28px 32px;
+        border-radius: 18px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
 
-section[data-testid="stSidebar"] * {
-    color: white !important;
-}
+    .brand-title {
+        color: white;
+        font-size: 32px;
+        font-weight: 800;
+        margin: 0;
+    }
+
+    .brand-subtitle {
+        color: #c7cdd6;
+        font-size: 15px;
+        margin-top: 6px;
+    }
+
+    .system-status {
+        background-color: #1f9d55;
+        color: white;
+        padding: 7px 13px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: 600;
+        display: inline-block;
+        margin-top: 15px;
+    }
+
+
+    /* ================================
+       TARJETAS DE ESTADÍSTICAS
+       ================================ */
+
+    [data-testid="stMetric"] {
+        background-color: white;
+        border: 1px solid #e4e7eb;
+        padding: 20px;
+        border-radius: 16px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    [data-testid="stMetricLabel"] {
+        color: #697382 !important;
+        font-weight: 600;
+    }
+
+    [data-testid="stMetricValue"] {
+        color: #151922 !important;
+        font-weight: 800;
+    }
+
+
+    /* ================================
+       CONTENEDORES
+       ================================ */
+
+    .dashboard-card {
+        background-color: white;
+        padding: 22px;
+        border-radius: 16px;
+        border: 1px solid #e4e7eb;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.04);
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        color: #202631;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 15px;
+    }
+
+
+    /* ================================
+       BOTONES
+       ================================ */
+
+    .stButton > button {
+        background-color: #c62828;
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 10px 20px;
+        font-weight: 700;
+        min-height: 42px;
+        transition: 0.2s;
+    }
+
+    .stButton > button:hover {
+        background-color: #a61f1f;
+        color: white;
+        transform: translateY(-1px);
+    }
+
+
+    /* ================================
+       INPUTS
+       ================================ */
+
+    .stTextInput input,
+    .stTextArea textarea {
+        background-color: white;
+        color: #202631;
+        border: 1px solid #d9dee5;
+        border-radius: 10px;
+    }
+
+    .stTextInput input:focus,
+    .stTextArea textarea:focus {
+        border-color: #c62828;
+        box-shadow: 0 0 0 1px #c62828;
+    }
+
+
+    /* ================================
+       TABLAS
+       ================================ */
+
+    [data-testid="stDataFrame"] {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid #e1e5ea;
+    }
+
+
+    /* ================================
+       ESTADOS
+       ================================ */
+
+    .status-available {
+        color: #18864b;
+        font-weight: 700;
+    }
+
+    .status-rented {
+        color: #c62828;
+        font-weight: 700;
+    }
+
+
+    /* ================================
+       DIVISORES
+       ================================ */
+
+    hr {
+        border: none;
+        border-top: 1px solid #e1e5ea;
+        margin: 25px 0;
+    }
+
+
+    /* ================================
+       PIE DE PÁGINA
+       ================================ */
+
+    .footer {
+        text-align: center;
+        color: #89919d;
+        font-size: 13px;
+        margin-top: 35px;
+        padding-top: 20px;
+        border-top: 1px solid #e1e5ea;
+    }
 
 </style>
 """, unsafe_allow_html=True)
@@ -264,60 +427,52 @@ alquilados = len(
 # TÍTULO
 # =====================================
 
-st.title(
-    "🚗 Sistema Inteligente de Renta de Vehículos"
-)
+# =====================================
+# ENCABEZADO PRINCIPAL
+# =====================================
 
-st.markdown(
-    """
-    <center>
-    <p>
-    Panel administrativo con asistente virtual inteligente
-    </p>
-    </center>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="brand-header">
+<div class="brand-title">🚗 RENTCAR AI</div>
+<div class="brand-subtitle">Sistema inteligente de gestión de renta de vehículos</div>
+<div class="system-status">● Sistema operativo · IA conectada</div>
+</div>
+""", unsafe_allow_html=True)
 
 
 # =====================================
 # ESTADÍSTICAS
 # =====================================
 
-st.markdown("## 📊 Estadísticas del Sistema")
+# =====================================
+# ESTADÍSTICAS
+# =====================================
 
+st.markdown("## 📊 Resumen del Sistema")
 
 col1, col2, col3, col4 = st.columns(4)
 
-
 with col1:
-
     st.metric(
-        "🚗 Total Vehículos",
+        "🚗 Vehículos registrados",
         total_vehiculos
     )
 
-
 with col2:
-
     st.metric(
-        "✅ Disponibles",
+        "🟢 Vehículos disponibles",
         disponibles
     )
 
-
 with col3:
-
     st.metric(
-        "🔴 Alquilados",
+        "🔴 Vehículos alquilados",
         alquilados
     )
 
-
 with col4:
-
     st.metric(
-        "👥 Clientes",
+        "👥 Clientes registrados",
         len(clientes)
     )
 
@@ -326,31 +481,65 @@ with col4:
 # TABLA DE VEHÍCULOS
 # =====================================
 
+# =====================================
+# INVENTARIO DE VEHÍCULOS
+# =====================================
+
 st.markdown("---")
 
-st.markdown(
-    "## 🚘 Inventario de Vehículos"
-)
+st.markdown("## 🚘 Inventario de Vehículos")
 
+# Crear DataFrame
+df_vehiculos = pd.DataFrame(vehiculos)
 
-df_vehiculos = pd.DataFrame(
-    vehiculos
-)
+# Filtros
+col_busqueda, col_estado = st.columns([2, 1])
 
+with col_busqueda:
+    busqueda = st.text_input(
+        "🔎 Buscar vehículo",
+        placeholder="Ejemplo: Toyota, Hyundai, Kia..."
+    )
 
-df_vehiculos.columns = [
+with col_estado:
+    filtro_estado = st.selectbox(
+        "📌 Filtrar por estado",
+        ["Todos", "Disponible", "Alquilado"]
+    )
+
+# Aplicar búsqueda
+df_filtrado = df_vehiculos.copy()
+
+if busqueda:
+    df_filtrado = df_filtrado[
+        df_filtrado["modelo"]
+        .str.contains(busqueda, case=False, na=False)
+    ]
+
+# Aplicar filtro de estado
+if filtro_estado != "Todos":
+    df_filtrado = df_filtrado[
+        df_filtrado["estado"] == filtro_estado
+    ]
+
+# Cambiar nombres para mostrar
+df_filtrado.columns = [
     "Modelo",
     "Estado",
     "Precio por Día"
 ]
 
+# Mostrar cantidad encontrada
+st.caption(
+    f"Mostrando {len(df_filtrado)} de {len(df_vehiculos)} vehículos"
+)
 
+# Tabla
 st.dataframe(
-    df_vehiculos,
+    df_filtrado,
     use_container_width=True,
     hide_index=True
 )
-
 
 # =====================================
 # PANEL LATERAL
@@ -376,6 +565,8 @@ with st.sidebar:
 
 
 # =====================================
+# =====================================
+# =====================================
 # ASISTENTE VIRTUAL
 # =====================================
 
@@ -383,22 +574,44 @@ if opcion == "🤖 Asistente Virtual":
 
     st.markdown("---")
 
-    st.header(
-        "🤖 Asistente Virtual"
+    st.header("🤖 Asistente Virtual")
+
+    st.markdown(
+        """
+<div class="dashboard-card">
+<div class="card-title">
+🤖 Asistente inteligente
+</div>
+
+<p>
+Consulta información sobre vehículos, clientes y reservas
+utilizando lenguaje natural.
+</p>
+</div>
+""",
+        unsafe_allow_html=True
     )
 
-    st.info(
-        "Realiza consultas sobre vehículos, clientes y reservas."
-    )
+    # =====================================
+    # CONSULTA
+    # =====================================
+
+    st.markdown("### 💬 Realiza una consulta")
 
     pregunta = st.text_area(
-        "Escribe tu consulta:",
-        placeholder=(
-            "Ejemplo: ¿Qué vehículos están disponibles?"
-        ),
-        height=100
+        "Escribe tu pregunta",
+        placeholder="Ejemplo: ¿Qué vehículos están disponibles?",
+        height=120
     )
 
+    st.caption(
+        "Puedes preguntar por vehículos disponibles, clientes, "
+        "reservas y pagos pendientes."
+    )
+
+    # =====================================
+    # BOTÓN
+    # =====================================
 
     if st.button(
         "🔍 Consultar Asistente"
@@ -407,54 +620,97 @@ if opcion == "🤖 Asistente Virtual":
         if pregunta.strip() == "":
 
             st.warning(
-                "Por favor, escribe una pregunta."
+                "⚠️ Por favor, escribe una pregunta antes de consultar."
             )
 
         else:
 
-            try: 
-                #conexion con api
+            try:
 
-                respuesta = requests.post(
+                # =====================================
+                # CONEXIÓN CON API
+                # =====================================
 
-                    f"{API_URL}/ask",
+                with st.spinner(
+                    "🤖 El asistente está procesando tu consulta..."
+                ):
 
-                    json={
-                        "pregunta": pregunta
-                    },
+                    respuesta = requests.post(
+                        f"{API_URL}/ask",
+                        json={
+                            "pregunta": pregunta
+                        },
+                        timeout=10
+                    )
 
-                    timeout=10
-
-                )
-
+                # =====================================
+                # RESPUESTA EXITOSA
+                # =====================================
 
                 if respuesta.status_code == 200:
 
                     datos = respuesta.json()
 
+                    st.markdown("---")
+
+                    st.markdown(
+                        "### 🤖 Respuesta del asistente"
+                    )
 
                     st.success(
-                        "Respuesta del asistente"
+                        "Consulta procesada correctamente."
                     )
 
+                    st.markdown(
+                        f"""
+<div class="dashboard-card">
 
-                    st.write(
-                        datos["respuesta"]
+<div class="card-title">
+🤖 RENTCAR AI
+</div>
+
+<p style="
+color: #202631;
+font-size: 16px;
+line-height: 1.7;
+">
+{datos["respuesta"]}
+</p>
+
+</div>
+""",
+                        unsafe_allow_html=True
                     )
 
+                # =====================================
+                # ERROR DE API
+                # =====================================
 
                 else:
 
                     st.error(
-                        f"Error de la API: "
+                        f"❌ Error de la API: "
                         f"{respuesta.status_code}"
                     )
 
+            except requests.exceptions.Timeout:
+
+                st.error(
+                    "⏱️ La API tardó demasiado en responder. "
+                    "Intenta nuevamente."
+                )
+
+            except requests.exceptions.ConnectionError:
+
+                st.error(
+                    "🔌 No se pudo conectar con la API. "
+                    "Verifica que el servidor FastAPI esté funcionando."
+                )
 
             except Exception as e:
 
                 st.error(
-                    f"No se pudo conectar con la API: {e}"
+                    f"❌ Ocurrió un error inesperado: {e}"
                 )
 
 
@@ -481,15 +737,139 @@ elif opcion == "🚘 Vehículos":
 
 elif opcion == "👥 Clientes":
 
-    st.header(
-        "👥 Clientes Registrados"
+    st.header("👥 Gestión de Clientes")
+
+    # =====================================
+    # RESUMEN DE CLIENTES
+    # =====================================
+
+    total_clientes = len(clientes)
+
+    clientes_pagados = len(
+        [
+            c for c in clientes
+            if c["estado"] == "Pagado"
+        ]
     )
 
+    clientes_pendientes = len(
+        [
+            c for c in clientes
+            if c["estado"] == "Pendiente"
+        ]
+    )
+
+    total_pendiente = sum(
+        c["precio"]
+        for c in clientes
+        if c["estado"] == "Pendiente"
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            "👥 Total Clientes",
+            total_clientes
+        )
+
+    with col2:
+        st.metric(
+            "🟢 Pagados",
+            clientes_pagados
+        )
+
+    with col3:
+        st.metric(
+            "🔴 Pagos Pendientes",
+            clientes_pendientes
+        )
+
+    with col4:
+        st.metric(
+            "💰 Por Cobrar",
+            f"${total_pendiente}"
+        )
+
+    st.markdown("---")
+
+    # =====================================
+       # =====================================
+    # TABLA DE CLIENTES
+    # =====================================
+
+    st.markdown("### 📋 Clientes Registrados")
+
+    # =====================================
+    # BUSCAR Y FILTRAR
+    # =====================================
+
+    col_busqueda, col_filtro = st.columns([2, 1])
+
+    with col_busqueda:
+
+        busqueda_cliente = st.text_input(
+            "🔎 Buscar cliente",
+            placeholder="Ejemplo: Carlos, Ana, Toyota..."
+        )
+
+    with col_filtro:
+
+        filtro_estado = st.selectbox(
+            "📌 Filtrar por estado",
+            [
+                "Todos",
+                "Pagado",
+                "Pendiente"
+            ]
+        )
+
+    # =====================================
+    # APLICAR FILTROS
+    # =====================================
+
+    clientes_filtrados = clientes
+
+    if busqueda_cliente:
+
+        clientes_filtrados = [
+            cliente
+            for cliente in clientes_filtrados
+            if busqueda_cliente.lower()
+            in (
+                cliente["nombre"]
+                + " "
+                + cliente["vehiculo"]
+            ).lower()
+        ]
+
+    if filtro_estado != "Todos":
+
+        clientes_filtrados = [
+            cliente
+            for cliente in clientes_filtrados
+            if cliente["estado"] == filtro_estado
+        ]
+
+    # =====================================
+    # MOSTRAR RESULTADOS
+    # =====================================
+
+    st.caption(
+        f"Mostrando {len(clientes_filtrados)} "
+        f"de {len(clientes)} clientes"
+    )
 
     df_clientes = pd.DataFrame(
-        clientes
+        clientes_filtrados
     )
 
+    df_clientes.columns = [
+        "Nombre",
+        "Vehículo",
+        "Precio",
+        "Estado"
+    ]
 
     st.dataframe(
         df_clientes,
@@ -499,20 +879,175 @@ elif opcion == "👥 Clientes":
 
 
 # =====================================
+# =====================================
 # RESERVAS
 # =====================================
 
 elif opcion == "📅 Reservas":
 
-    st.header(
-        "📅 Reservas del Sistema"
+    st.header("📅 Gestión de Reservas")
+
+    # =====================================
+    # DATOS DE RESERVAS
+    # =====================================
+
+    reservas = [
+        {
+            "cliente": "Carlos Martinez",
+            "vehiculo": "Toyota Hilux",
+            "precio": 65,
+            "estado": "Pendiente"
+        },
+        {
+            "cliente": "Ana Gomez",
+            "vehiculo": "Hyundai Tucson",
+            "precio": 50,
+            "estado": "Pendiente"
+        },
+        {
+            "cliente": "Luis Perez",
+            "vehiculo": "Toyota Prado",
+            "precio": 90,
+            "estado": "Pagado"
+        },
+        {
+            "cliente": "Maria Hernandez",
+            "vehiculo": "Ford Ranger",
+            "precio": 70,
+            "estado": "Pagado"
+        },
+        {
+            "cliente": "Jose Ramirez",
+            "vehiculo": "Volkswagen Jetta",
+            "precio": 45,
+            "estado": "Pendiente"
+        }
+    ]
+
+    # =====================================
+    # ESTADÍSTICAS
+    # =====================================
+
+    total_reservas = len(reservas)
+
+    reservas_pagadas = len(
+        [
+            r for r in reservas
+            if r["estado"] == "Pagado"
+        ]
     )
 
-
-    st.info(
-        "Actualmente existen 5 reservas registradas."
+    reservas_pendientes = len(
+        [
+            r for r in reservas
+            if r["estado"] == "Pendiente"
+        ]
     )
 
+    ingresos_reservas = sum(
+        r["precio"]
+        for r in reservas
+        if r["estado"] == "Pagado"
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            "📅 Total Reservas",
+            total_reservas
+        )
+
+    with col2:
+        st.metric(
+            "🟢 Pagadas",
+            reservas_pagadas
+        )
+
+    with col3:
+        st.metric(
+            "🔴 Pendientes",
+            reservas_pendientes
+        )
+
+    with col4:
+        st.metric(
+            "💰 Ingresos",
+            f"${ingresos_reservas}"
+        )
+
+    st.markdown("---")
+
+    # =====================================
+    # TABLA DE RESERVAS
+    # =====================================
+
+    st.markdown("### 📋 Reservas Registradas")
+
+    col_busqueda, col_filtro = st.columns([2, 1])
+
+    with col_busqueda:
+
+        busqueda_reserva = st.text_input(
+            "🔎 Buscar reserva",
+            placeholder="Ejemplo: Carlos, Toyota..."
+        )
+
+    with col_filtro:
+
+        filtro_reserva = st.selectbox(
+            "📌 Estado",
+            [
+                "Todos",
+                "Pagado",
+                "Pendiente"
+            ]
+        )
+
+    reservas_filtradas = reservas
+
+    if busqueda_reserva:
+
+        reservas_filtradas = [
+            reserva
+            for reserva in reservas_filtradas
+            if busqueda_reserva.lower()
+            in (
+                reserva["cliente"]
+                + " "
+                + reserva["vehiculo"]
+            ).lower()
+        ]
+
+    if filtro_reserva != "Todos":
+
+        reservas_filtradas = [
+            reserva
+            for reserva in reservas_filtradas
+            if reserva["estado"] == filtro_reserva
+        ]
+
+    st.caption(
+        f"Mostrando {len(reservas_filtradas)} "
+        f"de {len(reservas)} reservas"
+    )
+
+    df_reservas = pd.DataFrame(
+        reservas_filtradas
+    )
+
+    df_reservas.columns = [
+        "Cliente",
+        "Vehículo",
+        "Precio",
+        "Estado"
+    ]
+
+    st.dataframe(
+        df_reservas,
+        use_container_width=True,
+        hide_index=True
+    )
 
 # =====================================
 # PIE DE PÁGINA
