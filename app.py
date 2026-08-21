@@ -727,13 +727,74 @@ elif opcion == "👥 Clientes":
     st.markdown("---")
 
     # =====================================
+       # =====================================
     # TABLA DE CLIENTES
     # =====================================
 
     st.markdown("### 📋 Clientes Registrados")
 
+    # =====================================
+    # BUSCAR Y FILTRAR
+    # =====================================
+
+    col_busqueda, col_filtro = st.columns([2, 1])
+
+    with col_busqueda:
+
+        busqueda_cliente = st.text_input(
+            "🔎 Buscar cliente",
+            placeholder="Ejemplo: Carlos, Ana, Toyota..."
+        )
+
+    with col_filtro:
+
+        filtro_estado = st.selectbox(
+            "📌 Filtrar por estado",
+            [
+                "Todos",
+                "Pagado",
+                "Pendiente"
+            ]
+        )
+
+    # =====================================
+    # APLICAR FILTROS
+    # =====================================
+
+    clientes_filtrados = clientes
+
+    if busqueda_cliente:
+
+        clientes_filtrados = [
+            cliente
+            for cliente in clientes_filtrados
+            if busqueda_cliente.lower()
+            in (
+                cliente["nombre"]
+                + " "
+                + cliente["vehiculo"]
+            ).lower()
+        ]
+
+    if filtro_estado != "Todos":
+
+        clientes_filtrados = [
+            cliente
+            for cliente in clientes_filtrados
+            if cliente["estado"] == filtro_estado
+        ]
+
+    # =====================================
+    # MOSTRAR RESULTADOS
+    # =====================================
+
+    st.caption(
+        f"Mostrando {len(clientes_filtrados)} "
+        f"de {len(clientes)} clientes"
+    )
+
     df_clientes = pd.DataFrame(
-        clientes
+        clientes_filtrados
     )
 
     df_clientes.columns = [
