@@ -670,15 +670,78 @@ elif opcion == "🚘 Vehículos":
 
 elif opcion == "👥 Clientes":
 
-    st.header(
-        "👥 Clientes Registrados"
+    st.header("👥 Gestión de Clientes")
+
+    # =====================================
+    # RESUMEN DE CLIENTES
+    # =====================================
+
+    total_clientes = len(clientes)
+
+    clientes_pagados = len(
+        [
+            c for c in clientes
+            if c["estado"] == "Pagado"
+        ]
     )
 
+    clientes_pendientes = len(
+        [
+            c for c in clientes
+            if c["estado"] == "Pendiente"
+        ]
+    )
+
+    total_pendiente = sum(
+        c["precio"]
+        for c in clientes
+        if c["estado"] == "Pendiente"
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+        st.metric(
+            "👥 Total Clientes",
+            total_clientes
+        )
+
+    with col2:
+        st.metric(
+            "🟢 Pagados",
+            clientes_pagados
+        )
+
+    with col3:
+        st.metric(
+            "🔴 Pagos Pendientes",
+            clientes_pendientes
+        )
+
+    with col4:
+        st.metric(
+            "💰 Por Cobrar",
+            f"${total_pendiente}"
+        )
+
+    st.markdown("---")
+
+    # =====================================
+    # TABLA DE CLIENTES
+    # =====================================
+
+    st.markdown("### 📋 Clientes Registrados")
 
     df_clientes = pd.DataFrame(
         clientes
     )
 
+    df_clientes.columns = [
+        "Nombre",
+        "Vehículo",
+        "Precio",
+        "Estado"
+    ]
 
     st.dataframe(
         df_clientes,
